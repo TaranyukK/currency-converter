@@ -5,7 +5,7 @@ import "fmt"
 const (
 	USDTOEUR float64 = 0.85
 	USDTORUB float64 = 0.013
-	EURTORUB         = USDTOEUR * USDTORUB
+	EURTORUB         = USDTORUB / USDTOEUR
 )
 
 var (
@@ -38,13 +38,13 @@ func convertCurrency(amount int, stock string, target string) float64 {
 
 	switch {
 	case stock == "USD" && target == "EUR":
-		result = float64(amount) / USDTOEUR
+		result = float64(amount) * USDTOEUR
 	case stock == "USD" && target == "RUB":
 		result = float64(amount) / USDTORUB
 	case stock == "EUR" && target == "RUB":
 		result = float64(amount) / EURTORUB
 	case stock == "EUR" && target == "USD":
-		result = float64(amount) * USDTOEUR
+		result = float64(amount) / USDTOEUR
 	case stock == "RUB" && target == "USD":
 		result = float64(amount) * USDTORUB
 	case stock == "RUB" && target == "EUR":
