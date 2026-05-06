@@ -25,7 +25,7 @@ var (
 func main() {
 	amount, stockCur, targetCur := getUserInput()
 
-	resultNum := convertCurrency(amount, stockCur, targetCur)
+	resultNum := convertCurrency(amount, stockCur, targetCur, &convertationAmounts)
 
 	fmt.Printf("Количество переведенной валюты из %v в %v: %.2f", stockCur, targetCur, resultNum)
 }
@@ -41,10 +41,10 @@ func getUserInput() (int, string, string) {
 	return amount, stockCur, targetCur
 }
 
-func convertCurrency(amount int, stock string, target string) float64 {
+func convertCurrency(amount int, stock string, target string, rates *map[string]map[string]float64) float64 {
 	var result float64
 
-	result = float64(amount) * convertationAmounts[stock][target]
+	result = float64(amount) * (*rates)[stock][target]
 
 	return result
 }
