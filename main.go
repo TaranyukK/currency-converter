@@ -2,22 +2,30 @@ package main
 
 import "fmt"
 
-const (
-	USDTOEUR float64 = 0.85
-	USDTORUB float64 = 0.013
-	EURTORUB         = USDTORUB / USDTOEUR
-)
-
 var (
-	amount    int
-	stockCur  string
-	targetCur string
+	amount              int
+	stockCur            string
+	targetCur           string
+	convertationAmounts = map[string]map[string]float64{
+		"USD": {
+			"EUR": 0.86,
+			"RUB": 75.5,
+		},
+		"EUR": {
+			"USD": 1.17,
+			"RUB": 88.29,
+		},
+		"RUB": {
+			"USD": 0.013,
+			"EUR": 0.011,
+		},
+	}
 )
 
 func main() {
 	amount, stockCur, targetCur := getUserInput()
 
-	resultNum := convertCurrency(amount, stockCur, targetCur)
+	resultNum := convertCurrency(amount, stockCur, targetCur, &convertationAmounts)
 
 	fmt.Printf("Количество переведенной валюты из %v в %v: %.2f", stockCur, targetCur, resultNum)
 }
@@ -33,25 +41,10 @@ func getUserInput() (int, string, string) {
 	return amount, stockCur, targetCur
 }
 
-func convertCurrency(amount int, stock string, target string) float64 {
+func convertCurrency(amount int, stock string, target string, rates *map[string]map[string]float64) float64 {
 	var result float64
 
-	switch {
-	case stock == "USD" && target == "EUR":
-		result = float64(amount) * USDTOEUR
-	case stock == "USD" && target == "RUB":
-		result = float64(amount) / USDTORUB
-	case stock == "EUR" && target == "RUB":
-		result = float64(amount) / EURTORUB
-	case stock == "EUR" && target == "USD":
-		result = float64(amount) / USDTOEUR
-	case stock == "RUB" && target == "USD":
-		result = float64(amount) * USDTORUB
-	case stock == "RUB" && target == "EUR":
-		result = float64(amount) * EURTORUB
-	default:
-		result = 0
-	}
+	result = float64(amount) * (*rates)[stock][target]
 
 	return result
 }
